@@ -6,9 +6,10 @@ const app=express();
 
 // middleware
 app.use(express.json())
-mongoose.connect("mongodb://localhost:27017/expense").then(()=>{
+mongoose.connect("mongodb+srv://pavithra:pavisecemern@cluster0.xezm2.mongodb.net/").then(()=>{
     console.log("Connected to DB")
 })
+
 const expenseSchema=new mongoose.Schema({
     id: { type: String, required:true, unique: true}, 
     title:{type: String, required: true},
@@ -16,6 +17,15 @@ const expenseSchema=new mongoose.Schema({
 })
 
 const Expenses=mongoose.model("Expenses", expenseSchema);
+
+app.get("/api/expenses", async(req,res)=> {
+    try{
+    const expenses= await Expenses.find()
+    res.status(200),json({expenses})
+    } catch(err){
+        res.status(500).json(err.message)
+    }
+})
 
 app.get("/api/expenses/:id", async(req,res)=> {
     try{
@@ -30,16 +40,8 @@ app.get("/api/expenses/:id", async(req,res)=> {
     }
 })
 
-app.get("/api/expenses", async(req,res)=> {
-    try{
-    const expenses= await Expenses.find()
-    res.status(200),json({expenses})
-    } catch(err){
-        res.status(500).json(err.message)
-    }
-})
-
 app.post("/api/expenses", async(req,res)=> {
+    console.log(req.body)
     const{ title, amount}=req.body
     try{
         const newExpense = new Expenses({
