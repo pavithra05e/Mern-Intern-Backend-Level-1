@@ -4,7 +4,7 @@ const {v4: uuidv4 } = require("uuid")  // import uuid
 const cors=require('cors')
 // app creation
 const app=express();
-
+app.use(cors())
 // middleware
 app.use(express.json())
 mongoose.connect("mongodb+srv://pavithra:pavisecemern@cluster0.xezm2.mongodb.net/").then(()=>{
@@ -22,7 +22,7 @@ const Expenses=mongoose.model("Expenses", expenseSchema);
 app.get("/api/expenses", async(req,res)=> {
     try{
     const expenses= await Expenses.find()
-    res.status(200),json({expenses})
+    res.status(200).json({expenses})
     } catch(err){
         res.status(500).json(err.message)
     }
